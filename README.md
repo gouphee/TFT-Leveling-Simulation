@@ -30,7 +30,7 @@ Future Implementations:
   - Not sure how/why, but my gut says that the way W/L is simulated isn't correct
   - Obviously, W/L isn't 50/50 but there's something more to it, not sure.
 
-Analyses:
+Analysis Roadmap:
 - No relaxation -> Fixed start and goal
   - Rounds and Total Gold left for fixed 8g start and fixed 8+20 goal
     - Joint Grid -> Good baseline image to start from
@@ -85,5 +85,3 @@ Analyses:
   - Branch split on level above 30 logic
 
 - Fifth Relaxation -> implement better simulation of actually buying/selling units
-
-
