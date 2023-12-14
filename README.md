@@ -19,7 +19,7 @@ Methods:
 Future Implementations:
 - Visualization
 - Broader range of gold starts
-- Greateer variety of data results, like total wins and losses, and overall round history (ex: WWLWLWWLLL)
+- Greater variety of data results, like total wins and losses, and overall round history (ex: WWLWLWWLLL)
 - Relax loss assumption by having hard cap on total losses (8?)
 - Broader range of goal golds with rationales
 - Relax assumptions about buying units, upgrading, and leveling

@@ -68,7 +68,6 @@ def simulation(rounds, streak, win, gold, goal, results):
 
 
     if gold >= goal: # if conditions are fulfilled, add number of rounds and gold left to results array. Can add more interesting data instead here.
-        print(rounds, streak, win, gold, goal)
         results.append((rounds, gold-goal + 20))
     elif rounds % 6 == 5: # if it's a creep round, keep streak and type of streak, but don't add to it.
         simulation(rounds + 1, streak, win, gold, goal, results)
