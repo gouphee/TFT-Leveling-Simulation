@@ -4,6 +4,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from simulator import simulation
+from total_gold_simulator import total_gold_simulation
+from capped_simulator import capped_simulation
 
 def create_joint_grid(df):
     sns.set_theme(style="ticks")
@@ -62,27 +64,48 @@ def create_binned_joint_grid(df):
 
     cax = g.figure.add_axes([.15, .55, .02, .2])
 
+    # Define bins for the x-axis
+    x_bins = np.arange(df["Total Rounds"].min() - 0.5, df["Total Rounds"].max() + 1.5, 1)
+    # Define bins for the y-axis
+    y_bins = np.arange(df["Binned Gold Left"].min() - 1, df["Binned Gold Left"].max() + 2, 2)
+
+    print(y_bins)
+
     # Add the joint and marginal histogram plots
     g.plot_joint(
         sns.histplot, 
-        discrete=(True, True), 
-        binwidth=2,
+        discrete=(True, False),
         cmap="light:#19002D", 
-        pmax=.8, 
+        pmax=0.8, 
         cbar=True, 
         cbar_ax=cax,
-        cbar_kws={"shrink": 0.75}
+        cbar_kws={"shrink": 0.75},
+        bins=(x_bins, y_bins),
     )
-    g.plot_marginals(sns.histplot, element="step", color="#19002D", binwidth=2)  
+    
+    g.plot_marginals(sns.histplot, element="step", color="#19002D", bins=x_bins, common_norm=False, common_bins=False)
+    g.plot_marginals(sns.histplot, element="step", color="#19002D", bins=y_bins, common_norm=False, common_bins=False, fill=True, multiple="dodge")
+
+    # Explicitly set the limits of the x and y axes
+    g.ax_joint.set_xlim(df["Total Rounds"].min() - 0.5, df["Total Rounds"].max() + 0.5)
+    g.ax_joint.set_ylim(df["Binned Gold Left"].min() - 1, df["Binned Gold Left"].max() + 1)
+
+    # Set the ticks for x and y axis
+    g.ax_joint.set_xticks(np.arange(df["Total Rounds"].min() - 0.5, df["Total Rounds"].max() + 1.5, 1))
+    g.ax_joint.set_yticks(np.arange(df["Binned Gold Left"].min() - 1, df["Binned Gold Left"].max() + 1, 2))
+
+    # Setting the ticks for the marginal axes can be done similarly, if needed
+    g.ax_marg_x.set_xlim(df["Total Rounds"].min() - 0.5, df["Total Rounds"].max() + 0.5)
+    g.ax_marg_y.set_ylim(df["Binned Gold Left"].min() - 1, df["Binned Gold Left"].max() + 1)
 
     # Adjust x and y axis to only show whole numbers
     g.ax_joint.xaxis.set_major_locator(plt.MultipleLocator(1))
-    g.ax_joint.yaxis.set_major_locator(plt.MultipleLocator(2))  # Adjust for the binning of 2
+    g.ax_joint.yaxis.set_major_locator(plt.MultipleLocator(2))
 
     # Showing the plot
     plt.show()
 
-def create_surface_plot(df, y_tick_labels):
+def create_surface_plot(df, y_tick_labels, labels):
     # Create a figure and a 3D axis
     fig = plt.figure(figsize=(10, 7))
     ax = fig.add_subplot(111, projection='3d')
@@ -104,9 +127,9 @@ def create_surface_plot(df, y_tick_labels):
     fig.colorbar(surf, shrink=0.5, aspect=10, pad=0.1)
 
     # Set labels
-    ax.set_xlabel('Starting Gold')
-    ax.set_ylabel('Goal Gold')
-    ax.set_zlabel('Average Number of Rounds')
+    ax.set_xlabel(labels[0])
+    ax.set_ylabel(labels[1])
+    ax.set_zlabel(labels[2])
 
     # Set the y-ticks to match the index of the dataframe
     ax.set_yticks(range(len(df.index)))
@@ -119,45 +142,52 @@ def create_surface_plot(df, y_tick_labels):
     # Show the plot
     plt.show()
 
+def create_ridge_plot(df):
+    return
 
 def main():
-    # results = []
-    # simulation(0, 0, True, 8, 128, results)
-    # df = pd.DataFrame(results, columns = ['Total Rounds', 'Gold Left'])
 
-    # create_joint_grid(df)
-    # # create_binned_joint_grid(df)
+    # NAIVE FOUNDATION
+    results = []
+    simulation(0, 0, True, 8, 128, results)
+    df = pd.DataFrame(results, columns = ['Total Rounds', 'Gold Left'])
+
+    create_joint_grid(df)
+    create_binned_joint_grid(df)
     
-    # overlapping densities plot for this
+    # FIRST RELAXATION
 
-    # different_starts = {}
-    # start_averages = []
-    # for i in range(5, 15):
-    #     results = []
-    #     simulation(0,0,True,i,128,results)
-    #     df = pd.DataFrame(results, columns = ['Total Rounds', 'Gold Left'])
-    #     start_averages.append(df["Total Rounds"].mean())
-    #     different_starts[i] = df
+    # AVERAGE ROUND WITH DIFFERENT STARTING GOLD AND 8+20 GOAL - NAIVE VERSION
+
+    different_starts = {}
+    start_averages = []
+    for i in range(5, 15):
+        results = []
+        simulation(0,0,True,i,128,results)
+        df = pd.DataFrame(results, columns = ['Total Rounds', 'Gold Left'])
+        start_averages.append(df["Total Rounds"].mean())
+        different_starts[i] = df
     
-    # print(start_averages)
+    print(start_averages)
+    # overlapping densities plot
 
-    # another overlapping densities plot for this
-
+    # AVERAGE ROUND WITH 8 STARTING GOLD AND DIFFERENT GOALS - NAIVE VERSION
     # Level+Gold   8+0  8+10 8+20 8+30 8+30 8+30 9+0  9+10
     breakpoint_labels = ['8+0g', '8+10g', '8+20g', '8+30g', '8+40g', '8+50g', '9+0g', '9+10g']
     breakpoints = [108, 118, 128, 138, 148, 158, 188, 208]
-    # different_goals = {}
-    # goal_averages = []
-    # for breakpoint in breakpoints:
-    #     results=[]
-    #     simulation(0, 0, True, 8, breakpoint, results)
-    #     df = pd.DataFrame(results, columns = ['Total Rounds', 'Gold Left'])
-    #     goal_averages.append(df["Total Rounds"].mean())
-    #     different_goals[breakpoint] = df
+    different_goals = {}
+    goal_averages = []
+    for breakpoint in breakpoints:
+        results=[]
+        simulation(0, 0, True, 8, breakpoint, results)
+        df = pd.DataFrame(results, columns = ['Total Rounds', 'Gold Left'])
+        goal_averages.append(df["Total Rounds"].mean())
+        different_goals[breakpoint] = df
 
-    # print(goal_averages)
+    print(goal_averages)
+    # overlapping densities plot
 
-    # combo graph of breakpoints and gold starts, make a surface plot with y axis = rounds
+    # AVERAGE ROUND FOR DIFFERENT STARTS AND GOALS - NAIVE VERSION
 
     combo_averages = []
     for breakpoint in breakpoints:
@@ -172,10 +202,43 @@ def main():
     combos = pd.DataFrame(combo_averages, index=breakpoints, columns=range(5,15))
     print(combos)
 
+    labels = ["Starting Gold", "Goal Gold", "Average Number of Rounds"]
     create_surface_plot(combos, breakpoint_labels)
 
-    # Total gold by 4-1 for various gold starts?
-    # modify simulator to return when round = 12
+    # FULL EXECUTION AND AVERAGE TOTAL GOLD BY 4-1 FOR DIFFERENT STARTS - NAIVE VERSION
+    total_gold_different_starts = {}
+    total_gold_averages_starts = []
+    for i in range(5, 15):
+        results = []
+        total_gold_simulation(0,0,True,i,12,results)
+        df = pd.DataFrame(results, columns = ['Total Gold'])
+        total_gold_averages_starts.append(df["Total Gold"].mean())
+        total_gold_different_starts[i] = df
+    
+    # overlapping ridge density plots
+
+    # AVERAGE TOTAL GOLD BY ROUND - NAIVE VERSION
+    total_gold_labels = ['3-5', '3-6', '3-7', '4-1', '4-2', '4-3', '4-5']
+    combo_averages = []
+    for i in range(9, 16):
+        starts = []
+        for j in range(5, 15):
+            total_gold = []
+            total_gold_simulation(0,0,True,j, i, total_gold)
+            df = pd.DataFrame(total_gold, columns = ['Total Gold'])
+            starts.append(df["Total Gold"].mean())
+        combo_averages.append(starts)
+    
+    combos = pd.DataFrame(combo_averages, index=range(9,16), columns=range(5,15))
+    
+    labels = ["Starting Gold", "Round", "Total Gold"]
+
+    create_surface_plot(combos, total_gold_labels, labels)
+
+    # SECOND RELAXATION
+
+    
+    
 
 
 

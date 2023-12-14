@@ -15,7 +15,7 @@
 #   total gold
 #   goal gold
 
-def capped_simulation(rounds, streak, win, gold, goal, results):
+def total_gold_simulation(rounds, streak, win, gold, end, results):
     # streak gold is calculated as so.
     #   streak = 0 → 0
     #   streak = 1 → +1
@@ -40,23 +40,6 @@ def capped_simulation(rounds, streak, win, gold, goal, results):
 
     gold += (streak_gold + interest)
 
-    if rounds % 2 == 0 and rounds > 0: # every 2 rounds after 2-1, you get 4 xp in total, decreasing the gold you need to hit level 8
-        goal -= 4
-
-    # Passive Income from TFT Wiki, I think it's outdated
-
-    # if rounds == 0:
-    #     gold += 2
-    # elif rounds == 6:
-    #     gold += 2
-    # elif rounds == 12:
-    #     gold += 3
-    # elif rounds == 18:
-    #     print(rounds)
-    #     gold += 4
-    # else:
-    #     gold += 5
-
     # Passive income from MetaTFT
     if rounds == 0: # if it is the first round (2-1) you only get 4 gold. otherwise you get 5.
         gold += 4
@@ -67,12 +50,12 @@ def capped_simulation(rounds, streak, win, gold, goal, results):
         gold += 1
 
 
-    if gold >= goal: # if conditions are fulfilled, add number of rounds and gold left to results array. Can add more interesting data instead here.
-        results.append((rounds, gold-goal + 20))
+    if rounds == end: # if conditions are fulfilled, add number of rounds and gold left to results array. Can add more interesting data instead here.
+        results.append(gold)
     elif rounds % 6 == 5: # if it's a creep round, keep streak and type of streak, but don't add to it.
-        simulation(rounds + 1, streak, win, gold, goal, results)
+        total_gold_simulation(rounds + 1, streak, win, gold, end, results)
     else: # on normal rounds, we recursively call the function again, but with a continued streak and a change in streak.
-        simulation(rounds + 1, 1, not win, gold, goal, results)
-        simulation(rounds + 1, streak + 1, win, gold, goal, results)
+        total_gold_simulation(rounds + 1, 1, not win, gold, end, results)
+        total_gold_simulation(rounds + 1, streak + 1, win, gold, end, results)
         
 
