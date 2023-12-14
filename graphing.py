@@ -82,6 +82,44 @@ def create_binned_joint_grid(df):
     # Showing the plot
     plt.show()
 
+def create_surface_plot(df, y_tick_labels):
+    # Create a figure and a 3D axis
+    fig = plt.figure(figsize=(10, 7))
+    ax = fig.add_subplot(111, projection='3d')
+
+    # Create an X-Y mesh of the shape of the dataframe
+    X, Y = np.meshgrid(df.columns, range(len(df.index)))
+    
+    # Convert the dataframe to a 2D array for plotting
+    Z = df.values
+
+    z_min, z_max = Z.min(), Z.max()
+    z_range = z_max - z_min
+    ax.set_zlim(z_min - z_range * 0.1, z_max + z_range * 0.1)
+
+    # Plot the surface
+    surf = ax.plot_surface(X, Y, Z, cmap='Purples', edgecolor=None, vmin=z_min - z_range * 0.1, vmax=z_max)
+
+    # Add a color bar which maps values to colors
+    fig.colorbar(surf, shrink=0.5, aspect=10, pad=0.1)
+
+    # Set labels
+    ax.set_xlabel('Starting Gold')
+    ax.set_ylabel('Goal Gold')
+    ax.set_zlabel('Average Number of Rounds')
+
+    # Set the y-ticks to match the index of the dataframe
+    ax.set_yticks(range(len(df.index)))
+    
+    # Label the y-ticks with the custom list of strings
+    # Ensure the list of strings is the same length as the dataframe's index
+    ax.set_yticklabels(y_tick_labels, rotation=-5, verticalalignment='baseline')
+
+
+    # Show the plot
+    plt.show()
+
+
 def main():
     # results = []
     # simulation(0, 0, True, 8, 128, results)
@@ -106,6 +144,7 @@ def main():
     # another overlapping densities plot for this
 
     # Level+Gold   8+0  8+10 8+20 8+30 8+30 8+30 9+0  9+10
+    breakpoint_labels = ['8+0g', '8+10g', '8+20g', '8+30g', '8+40g', '8+50g', '9+0g', '9+10g']
     breakpoints = [108, 118, 128, 138, 148, 158, 188, 208]
     # different_goals = {}
     # goal_averages = []
@@ -130,8 +169,13 @@ def main():
             starts.append(df["Total Rounds"].mean())
         combo_averages.append(starts)
     
-    combos = pd.DataFrame(combo_averages, index= breakpoints, columns=range(5,15))
+    combos = pd.DataFrame(combo_averages, index=breakpoints, columns=range(5,15))
     print(combos)
+
+    create_surface_plot(combos, breakpoint_labels)
+
+    # Total gold by 4-1 for various gold starts?
+    # modify simulator to return when round = 12
 
 
 
