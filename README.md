@@ -7,6 +7,7 @@ Initial Premise:
 
 Strong Assumptions:
 - You don't care about buying units, upgrading, or leveling when you are under 50 gold, i.e. gold never decreases
+- We don't account for any gold generated from loot orbs
 - You have unlimited life to loss streak
 
 Methods:
