@@ -2,8 +2,8 @@
 Simulating average round you can level up to level 8 in TFT
 
 Initial Premise:
-- Level 3, 8 gold before gold is given on 2-1
-- Initial goal is to hit level 8 with 20 gold to roll -> 128 total gold
+- Level 3, 6 gold before gold is given on 2-1
+- Initial goal is to hit level 8 with 30 gold to roll -> 138 total gold
 
 Strong Assumptions:
 - You don't care about buying units, upgrading, or leveling when you are under 50 gold, i.e. gold never decreases
