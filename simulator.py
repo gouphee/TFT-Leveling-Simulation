@@ -15,9 +15,6 @@
 #   total gold
 #   goal gold
 
-from collections import Counter 
-
-
 def simulation(rounds, streak, win, gold, goal, results):
     # streak gold is calculated as so.
     #   streak = 0 → 0
@@ -28,7 +25,9 @@ def simulation(rounds, streak, win, gold, goal, results):
 
     streak_gold = 0 # depending on your streak, you'll get bonus gold
 
-    if streak == 1:
+    if streak == 0:
+        streak_gold = 0
+    elif streak == 1:
         streak_gold = 1
     elif streak == 2 or streak == 3:
         streak_gold = 2
@@ -37,7 +36,7 @@ def simulation(rounds, streak, win, gold, goal, results):
     elif streak >= 5:
         streak_gold = 4
 
-    interest = min(gold % 10, 5) # interest gold is at most 5 or your gold/10, so we take the minimum
+    interest = min(gold // 10, 5) # interest gold is at most 5 or your gold/10, so we take the minimum
 
     gold += (streak_gold + interest)
 
@@ -68,9 +67,9 @@ def simulation(rounds, streak, win, gold, goal, results):
         gold += 1
 
 
-    if gold >= goal: # if conditions are fulfilled, add number of rounds to results array. Can add more interesting data instead here.
+    if gold >= goal: # if conditions are fulfilled, add number of rounds and gold left to results array. Can add more interesting data instead here.
         print(rounds, streak, win, gold, goal)
-        results.append(rounds)
+        results.append((rounds, gold-goal + 20))
     elif rounds % 6 == 5: # if it's a creep round, keep streak and type of streak, but don't add to it.
         simulation(rounds + 1, streak, win, gold, goal, results)
     else: # on normal rounds, we recursively call the function again, but with a continued streak and a change in streak.
@@ -78,16 +77,3 @@ def simulation(rounds, streak, win, gold, goal, results):
         simulation(rounds + 1, streak + 1, win, gold, goal, results)
         
 
-# things to maybe care about
-#   total wins and losses
-#   overall record
-
-def main():
-    results = []
-    simulation(0,0,True, 8, 138, results)
-    counts = Counter(results)
-    print(counts)
-    
-
-if __name__ == "__main__":
-    main()
