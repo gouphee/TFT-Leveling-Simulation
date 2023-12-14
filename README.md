@@ -17,11 +17,15 @@ Methods:
 - If current round is PvE round, only call with continued streak and no increase in streak.
 
 Future Implementations:
-- Visualization
-- Broader range of gold starts
+- ~~Visualization~~
+  - WIP as more things are implemented
+- ~~Broader range of gold starts~~
 - Greater variety of data results, like total wins and losses, and overall round history (ex: WWLWLWWLLL)
 - Relax loss assumption by having hard cap on total losses (8?)
-- Broader range of goal golds with rationales
+- ~~Broader range of goal golds with rationales~~
 - Relax assumptions about buying units, upgrading, and leveling
   - If you can level and have 30 remaining gold minimum, you level
   - Actual leveling logic above 50 gold, and level and xp tracking as params
+- Implement normalization for simulated outcomes
+  - Not sure how/why, but my gut says that the way W/L is simulated isn't correct
+  - Obviously, W/L isn't 50/50 but there's something more to it, not sure.
