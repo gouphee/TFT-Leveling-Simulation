@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from simulator import simulation
 from total_gold_simulator import total_gold_simulation
-from capped_simulator import capped_simulation
 
 def create_joint_grid(df):
     sns.set_theme(style="ticks")
